@@ -29,8 +29,7 @@ su
   database: blogRspec_test
 
   #edit database.yml
-  username: robert
-  password: spc67ru
+  
   socket: /opt/lampp/var/mysql/mysql.sock
 
 
