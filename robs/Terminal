@@ -1,0 +1,232 @@
+#Terminal
+## note numbers just show line was pulled from history
+  468  source ~/.rvm/scripts/rvm
+  469  rvm use ruby-2.3.0@blog --ruby-version --create
+  470  gem install rails
+  471  rails . -d mysql
+  472  rails new . -d mysql
+
+  #In GEM File add ['rspec-rails', '~> 3.0']
+  
+  group :development, :test do
+  # Call 'byebug' anywhere in the code to stop execution and get a debugger console
+  gem 'byebug'
+  gem 'rspec-rails', '~> 3.0'
+  end
+
+
+  473  bundle install
+  477  rails  bundle install
+  478  rails generate rspec:install
+
+#Data base
+cd /opt/lampp
+su
+./lampp start
+
+  #create the databases
+  database: blogRspec_development
+  database: blogRspec_test
+
+  #edit database.yml
+  username: robert
+  password: spc67ru
+  socket: /opt/lampp/var/mysql/mysql.sock
+
+
+  rails generate model post title:string body:text
+  rake db:migrate
+
+
+  #Edit Spec
+#spec/post_spec.rb
+
+require 'rails_helper'
+
+RSpec.describe Post, type: :model do
+  before(:all)do
+    @post = Post.new(body: 'My Body', title: 'My Title')
+  end
+  it 'should have a matching body' do
+    expect(@post.body).to eq('My Body')
+  end
+
+  it 'should have a matching title' do
+    expect(@post.title).to eq('My Title')
+  end
+
+end
+
+#run Tests
+#------------PART 2---------------------
+gem 'capybara', '~> 2.4.4'
+
+bundle install
+
+rails generate controller posts
+
+mkdir spec/features
+touch spec/features/add_posts_spec.rb
+
+require 'rails_helper'
+RSpec.feature "adding posts" do
+  scenario "alow a user to add a post" do
+    
+    visit new_post_path
+
+    fill_in "Title", with: "My Title"
+    fill_in "Body", with: "My Body"
+
+    click_on("Create Post")
+
+    expect(page).to have_content("My Title")
+    expect(page).to have_content("My Body")
+
+  end
+end
+
+rspec spec/features/add_posts_spec.rb
+
+rake routes
+#notice we dont have routes defined yet
+
+#Fix route error in routes.rb
+resources :posts
+
+rake routes
+
+rspec spec/features/add_posts_spec.rb
+
+#edit
+app/controllers/posts_controller.rb
+
+def new
+
+end
+
+rspec spec/features/add_posts_spec.rb
+#missing Template
+
+touch app/views/posts/new.html.erb
+
+<%= form_for(@post) do |f| %>
+  <%=f.label :title %>
+  <%=f.text_field :title %>
+
+<% end %>
+
+rspec spec/features/add_posts_spec.rb
+
+#edit
+app/controllers/posts_controller.rb
+
+def new
+ @post = Post.new
+end
+
+rspec spec/features/add_posts_spec.rb
+
+
+<%= form_for(@post) do |f| %>
+  <%=f.label :title %>
+  <%=f.text_field :title %>
+
+  <%=f.label :body %>
+  <%=f.text_area :body %>
+
+<% end %>
+
+
+rspec spec/features/add_posts_spec.rb
+
+#add a submit button
+
+<%= form_for(@post) do |f| %>
+  <%=f.label :title %>
+  <%=f.text_field :title %>
+
+  <%=f.label :body %>
+  <%=f.text_area :body %>
+
+  <%=f.submit "Create Post" %>
+  
+
+<% end %>
+
+rspec spec/features/add_posts_spec.rb
+
+
+app/controllers/posts_controller.rb
+class PostsController < ApplicationController
+
+	def new
+	 @post = Post.new
+	end
+
+	def create
+	  @post = Post.new(post_params)
+	  if @post.save
+	    redirect_to @post
+	  else
+	    render 'new'
+
+	  end
+	end
+
+	private
+
+	def post_params
+	  params.require(:post).permit(:body, :title)
+	end
+
+end
+
+rspec spec/features/add_posts_spec.rb
+
+#add show action
+
+class PostsController < ApplicationController
+
+	def new
+	 @post = Post.new
+	end
+
+	def create
+	  @post = Post.new(post_params)
+	  if @post.save
+	    redirect_to @post
+	  else
+	    render 'new'
+
+	  end
+	end
+   
+    def show
+   	  @post = Post.find(params[:id])
+    end
+
+
+	private
+
+	def post_params
+	  params.require(:post).permit(:body, :title)
+	end
+
+end
+
+rspec spec/features/add_posts_spec.rb
+
+touch app/views/posts/show.html.erb
+
+#edit this
+
+<%= @post.title %>
+
+rspec spec/features/add_posts_spec.rb
+
+<%= @post.title %>
+<%= @post.body %>
+
+rspec spec/features/add_posts_spec.rb
+ 
+SHOULD BE GREEN
