@@ -1,4 +1,7 @@
 #Terminal
+https://www.youtube.com/watch?v=gsgG-JvXsJ0&list=WL&index=14
+Introductory RSpec Tutorial (Redone)
+
 ## note numbers just show line was pulled from history
   468  source ~/.rvm/scripts/rvm
   469  rvm use ruby-2.3.0@blog --ruby-version --create
