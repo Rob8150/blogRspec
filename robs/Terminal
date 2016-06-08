@@ -232,3 +232,55 @@ rspec spec/features/add_posts_spec.rb
 rspec spec/features/add_posts_spec.rb
  
 SHOULD BE GREEN
+
+--------PART 3  Factory Girl ---------------
+# Add Factory Girl Gem to Project
+gem 'factory_girl_rails', '~> 4.0'
+
+source ~/.rvm/scripts/rv
+
+bundle install
+
+#edit spec/rails_helper.rb
+ #after the line below in that file
+ config.fixture_path = "#{::Rails.root}/spec/fixtures"
+ 
+ #add this line
+ config.include FactoryGirl::Syntax::Methods
+
+ created a directory spec/factories
+ cd spec/factories
+ touch post.rb
+
+ FactoryGirl.define do
+  factory :post do
+    title "My New Title"
+    body "My New Body"
+  end
+end
+
+#save
+
+#Modify feature to use the factory
+
+  require 'rails_helper'
+
+RSpec.feature "adding posts" do
+  
+  scenario " allow a user to add a post" do
+  
+  #post = create(:post)
+  #we can overite the factory value with our own value
+  post = create(:post, title: "My other Title")
+
+  visit post_path(post)
+
+   expect(page).to have_content("My other Title")
+
+   expect(page).to have_content("My New Body")
+   
+  end
+
+end
+
+#save
